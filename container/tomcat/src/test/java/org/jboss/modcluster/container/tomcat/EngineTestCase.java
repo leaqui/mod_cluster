@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.modcluster.container.catalina;
+package org.jboss.modcluster.container.tomcat;
 
 import java.util.Iterator;
 
@@ -28,11 +28,6 @@ import org.jboss.modcluster.container.Connector;
 import org.jboss.modcluster.container.Engine;
 import org.jboss.modcluster.container.Host;
 import org.jboss.modcluster.container.Server;
-import org.jboss.modcluster.container.tomcat.TomcatEngine;
-import org.jboss.modcluster.container.tomcat.TomcatFactoryRegistry;
-import org.jboss.modcluster.container.tomcat.ConnectorFactory;
-import org.jboss.modcluster.container.tomcat.HostFactory;
-import org.jboss.modcluster.container.tomcat.ProxyConnectorProvider;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -40,7 +35,6 @@ import static org.mockito.Mockito.*;
 
 /**
  * @author Paul Ferraro
- * 
  */
 public class EngineTestCase {
     protected final TomcatFactoryRegistry registry = mock(TomcatFactoryRegistry.class);
@@ -57,9 +51,9 @@ public class EngineTestCase {
     public void getDefaultHost() {
         String expected = "localhost";
         when(this.engine.getDefaultHost()).thenReturn(expected);
-        
+
         String result = this.catalinaEngine.getDefaultHost();
-        
+
         assertSame(expected, result);
     }
 
@@ -68,11 +62,11 @@ public class EngineTestCase {
         org.apache.catalina.Host host = mock(org.apache.catalina.Host.class);
         HostFactory hostFactory = mock(HostFactory.class);
         Host expected = mock(Host.class);
-        
+
         when(this.engine.findChild("host")).thenReturn(host);
         when(this.registry.getHostFactory()).thenReturn(hostFactory);
         when(hostFactory.createHost(same(this.registry), same(host), same(this.catalinaEngine))).thenReturn(expected);
-        
+
         Host result = this.catalinaEngine.findHost("host");
 
         assertSame(expected, result);
@@ -123,11 +117,11 @@ public class EngineTestCase {
         ProxyConnectorProvider provider = mock(ProxyConnectorProvider.class);
         Connector expected = mock(Connector.class);
         ConnectorFactory factory = mock(ConnectorFactory.class);
-        
+
         when(this.registry.getProxyConnectorProvider()).thenReturn(provider);
         when(this.registry.getConnectorFactory()).thenReturn(factory);
-        when(provider.createProxyConnector(factory,  this.engine)).thenReturn(expected);
-        
+        when(provider.createProxyConnector(factory, this.engine)).thenReturn(expected);
+
         Connector result = this.catalinaEngine.getProxyConnector();
 
         assertSame(expected, result);
@@ -146,12 +140,12 @@ public class EngineTestCase {
 
         assertSame(this.server, result);
     }
-    
+
     @Test
     public void getSessionCookieName() {
         assertEquals("JSESSIONID", this.catalinaEngine.getSessionCookieName());
     }
-    
+
     @Test
     public void getSessionParameterName() {
         assertEquals("jsessionid", this.catalinaEngine.getSessionParameterName());

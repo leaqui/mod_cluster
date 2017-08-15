@@ -26,11 +26,10 @@ import org.jboss.modcluster.container.ContainerEventHandler;
 
 /**
  * @author Radoslav Husar
- * @version Jun 2016
  */
 public class TomcatEventHandlerAdapterFactory implements LifecycleListenerFactory {
     @Override
-    public LifecycleListener createListener(ContainerEventHandler handler) {
-        return new TomcatEventHandlerAdapter(handler);
+    public LifecycleListener createListener(ContainerEventHandler handler, TomcatConnectorConfiguration connectorConfiguration) {
+        return new TomcatEventHandlerAdapter(handler, connectorConfiguration);
     }
 }

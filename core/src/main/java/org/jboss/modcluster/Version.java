@@ -1,4 +1,4 @@
-/**
+/*
  * JBoss, Home of Professional Open Source.
  * Copyright 2013, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
@@ -36,7 +36,7 @@ public enum Version {
     private static final ResourceBundle resource = ResourceBundle.getBundle(Version.class.getName());
     private final String key;
 
-    private Version(String key) {
+    Version(String key) {
         this.key = key;
     }
 

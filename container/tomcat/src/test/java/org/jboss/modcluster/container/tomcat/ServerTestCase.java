@@ -19,28 +19,21 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.modcluster.container.catalina;
+package org.jboss.modcluster.container.tomcat;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.same;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.Iterator;
 
 import org.apache.catalina.Service;
 import org.jboss.modcluster.container.Engine;
 import org.jboss.modcluster.container.Server;
-import org.jboss.modcluster.container.tomcat.TomcatFactoryRegistry;
-import org.jboss.modcluster.container.tomcat.TomcatServer;
-import org.jboss.modcluster.container.tomcat.EngineFactory;
 import org.junit.Test;
 
 /**
  * @author Paul Ferraro
- * 
  */
 public class ServerTestCase {
     protected final TomcatFactoryRegistry registry = mock(TomcatFactoryRegistry.class);
@@ -51,14 +44,14 @@ public class ServerTestCase {
     protected Server createServer(org.apache.catalina.Server server) {
         return new TomcatServer(this.registry, server);
     }
-    
+
     @Test
     public void getEngines() {
         Service service = mock(Service.class);
         org.apache.catalina.Engine engine = mock(org.apache.catalina.Engine.class);
         EngineFactory engineFactory = mock(EngineFactory.class);
         Engine expected = mock(Engine.class);
-        
+
         when(this.server.findServices()).thenReturn(new Service[] { service });
         when(service.getContainer()).thenReturn(engine);
         when(this.registry.getEngineFactory()).thenReturn(engineFactory);

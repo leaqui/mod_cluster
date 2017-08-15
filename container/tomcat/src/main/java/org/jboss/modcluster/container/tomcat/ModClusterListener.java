@@ -63,7 +63,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Paul Ferraro
  */
-public class ModClusterListener extends ModClusterConfig implements LifecycleListener, LoadBalanceFactorProviderFactory, ModClusterServiceMBean {
+public class ModClusterListener extends ModClusterConfig implements TomcatConnectorConfiguration, LifecycleListener, LoadBalanceFactorProviderFactory, ModClusterServiceMBean {
     private static final Logger log = Logger.getLogger(ModClusterListener.class);
 
     private final ModClusterServiceMBean service;
@@ -78,7 +78,7 @@ public class ModClusterListener extends ModClusterConfig implements LifecycleLis
         ModClusterService service = new ModClusterService(this, this);
 
         this.service = service;
-        this.listener = ServiceLoaderTomcatFactory.load(LifecycleListenerFactory.class, TomcatEventHandlerAdapterFactory.class).createListener(service);
+        this.listener = ServiceLoaderTomcatFactory.load(LifecycleListenerFactory.class, TomcatEventHandlerAdapterFactory.class).createListener(service, this);
     }
 
     protected ModClusterListener(ModClusterServiceMBean mbean, LifecycleListener listener) {
@@ -214,6 +214,15 @@ public class ModClusterListener extends ModClusterConfig implements LifecycleLis
     }
 
     /**
+     * String-based variant of {@link ModClusterListener#setLoadDecayFactor(float)} to set float decay factor used by Tomcat modeler.
+     *
+     * @param decayFactor a positive number
+     */
+    public void setLoadDecayFactor(String decayFactor) {
+        this.decayFactor = Float.parseFloat(decayFactor);
+    }
+
+    /**
      * Returns the number of historic load values used when calculating the load factor.
      *
      * @return the configured load history
@@ -332,7 +341,7 @@ public class ModClusterListener extends ModClusterConfig implements LifecycleLis
         Map<InetSocketAddress, String> map = this.service.getProxyConfiguration();
         if (map.isEmpty())
             return null;
-        Object results[] = map.values().toArray();
+        Object[] results = map.values().toArray();
         result = (String) results[0];
         return result;
     }
@@ -343,7 +352,7 @@ public class ModClusterListener extends ModClusterConfig implements LifecycleLis
         Map<InetSocketAddress, String> map = this.service.getProxyInfo();
         if (map.isEmpty())
             return null;
-        Object results[] = map.values().toArray();
+        Object[] results = map.values().toArray();
         result = (String) results[0];
         return result;
     }
@@ -354,6 +363,30 @@ public class ModClusterListener extends ModClusterConfig implements LifecycleLis
 
     public boolean stopContext(String host, String path, long timeout) {
         return this.service.stopContext(host, path, timeout, TimeUnit.SECONDS);
+    }
+
+    // ---------------------- Tomcat connector configuration ----------------------
+
+    private String connectorAddress;
+
+    @Override
+    public String getConnectorAddress() {
+        return connectorAddress;
+    }
+
+    public void setConnectorAddress(String connectorAddress) {
+        this.connectorAddress = connectorAddress;
+    }
+
+    private Integer connectorPort;
+
+    @Override
+    public Integer getConnectorPort() {
+        return connectorPort;
+    }
+
+    public void setConnectorPort(int connectorPort) {
+        this.connectorPort = connectorPort;
     }
 
     // ---------------------------------------- String-based Tomcat modeler and server.xml methods ----------------------------------------
